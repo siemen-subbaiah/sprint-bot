@@ -7,7 +7,7 @@ import Image from 'next/image';
 
 const ZohoLogin = () => {
   const ZOHO_AUTH_URL = `https://accounts.zoho.in/oauth/v2/auth?scope=aaaserver.profile.READ,
-ZohoSprints.teamusers.READ,ZohoSprints.items.READ&client_id=${process.env.NEXT_PUBLIC_ZOHO_CLIENT_ID}&state=testing&response_type=code&redirect_uri=${process.env.NEXT_PUBLIC_REDIRECT_URL}&access_type=offline`;
+ZohoSprints.teamusers.READ,ZohoSprints.sprints.READ,ZohoSprints.items.READ&client_id=${process.env.NEXT_PUBLIC_ZOHO_CLIENT_ID}&state=testing&response_type=code&redirect_uri=${process.env.NEXT_PUBLIC_REDIRECT_URL}&access_type=offline`;
 
   return (
     <div className='max-w-3xl mx-auto md:mt-20 px-8 size-full flex flex-col justify-center'>

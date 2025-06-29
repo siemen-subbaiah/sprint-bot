@@ -1,21 +1,40 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Button } from './ui/button';
+import { useChat } from '@ai-sdk/react';
+import { toast } from 'sonner';
+import { fetchWithErrorHandlers } from '@/lib/utils';
+import { ChatSDKError } from '@/lib/errors';
+import { FormInput } from './form-input';
+import { Messages } from './messages';
 
-const Chat = ({
-  userName,
-  userId,
-}: {
-  userName: string | undefined;
-  userId: string | undefined;
-}) => {
+const Chat = ({ userName }: { userName: string | undefined }) => {
   const handleLogout = async () => {
     await fetch('/api/logout', {
       method: 'POST',
     });
   };
+
+  const {
+    messages,
+    setMessages,
+    handleSubmit,
+    input,
+    setInput,
+    append,
+    status,
+    stop,
+  } = useChat({
+    experimental_throttle: 100,
+    sendExtraMessageFields: true,
+    fetch: fetchWithErrorHandlers,
+    onError: (error) => {
+      if (error instanceof ChatSDKError) {
+        toast.error(error.message);
+      }
+    },
+  });
 
   return (
     <>
@@ -27,31 +46,22 @@ const Chat = ({
           Logout
         </Button>
       </header>
-      <div className='flex flex-col min-w-0 gap-6 flex-1 overflow-y-scroll pt-4 relative'>
-        <div
-          key='overview'
-          className='max-w-3xl mx-auto md:mt-20 px-8 size-full flex flex-col justify-center'
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            transition={{ delay: 0.5 }}
-            className='text-2xl font-semibold'
-          >
-            Hello {userName} ({userId})
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            transition={{ delay: 0.6 }}
-            className='text-2xl text-zinc-500'
-          >
-            How can I help you today?
-          </motion.div>
-        </div>
-      </div>
+      <Messages
+        messages={messages}
+        setMessages={setMessages}
+        status={status}
+        userName={userName!}
+      />
+      <FormInput
+        input={input}
+        setInput={setInput}
+        handleSubmit={handleSubmit}
+        status={status}
+        stop={stop}
+        messages={messages}
+        setMessages={setMessages}
+        append={append}
+      />
     </>
   );
 };
