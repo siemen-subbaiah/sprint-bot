@@ -1,8 +1,8 @@
 import React, { memo, useCallback, useEffect, useRef } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useScrollToBottom } from '@/hooks/use-scroll-to-bottom';
+// import { AnimatePresence, motion } from 'framer-motion';
+// import { useScrollToBottom } from '@/hooks/use-scroll-to-bottom';
 import { Button } from './ui/button';
-import { ArrowDown, ArrowUpIcon } from 'lucide-react';
+import { ArrowUpIcon } from 'lucide-react';
 import { Textarea } from './ui/textarea';
 import cx from 'classnames';
 import { toast } from 'sonner';
@@ -35,7 +35,7 @@ const PureFormInput = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { width } = useWindowSize();
 
-  const { isAtBottom, scrollToBottom } = useScrollToBottom();
+  // const { isAtBottom, scrollToBottom } = useScrollToBottom();
 
   const adjustHeight = () => {
     if (textareaRef.current) {

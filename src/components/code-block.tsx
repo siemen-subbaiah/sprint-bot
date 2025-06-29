@@ -3,7 +3,7 @@
 interface CodeBlockProps {
   inline: boolean;
   className: string;
-  children: any;
+  children: React.ReactNode;
 }
 
 export function CodeBlock({

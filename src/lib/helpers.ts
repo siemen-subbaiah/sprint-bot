@@ -1,4 +1,5 @@
 import {
+  CleanedItems,
   ItemApiResponse,
   ItemPriorityMap,
   ItemProp,
@@ -45,7 +46,7 @@ export function storeSprintDetails(currentSprint: SprintAPIResponse) {
 }
 
 export function formatItems(itemData: ItemApiResponse) {
-  const items = [];
+  const items: CleanedItems[] = [];
   const keys: ItemProp = itemData.item_prop;
 
   Object.entries(itemData.itemJObj).forEach(([, value]) => {

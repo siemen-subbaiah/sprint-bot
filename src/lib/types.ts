@@ -279,17 +279,17 @@ export interface SprintAPIResponse {
 
 export interface CleanedItems {
   itemId: string;
-  itemName: string;
-  createdDate: string;
-  completedDate: string;
-  createdBy: string;
-  itemType: string;
+  itemName: string | number | boolean | Record<string, string> | string[];
+  createdDate: string | number | boolean | Record<string, string> | string[];
+  completedDate: string | number | boolean | Record<string, string> | string[];
+  createdBy: string | undefined;
+  itemType: string | undefined;
   projectName: string;
-  sprintName: string;
-  assignedTo: string[];
-  itemStatus: string;
-  itemPriority: string;
-  itemPoints: number;
+  sprintName: string | undefined;
+  assignedTo: (string | undefined)[];
+  itemStatus: string | undefined;
+  itemPriority: string | undefined;
+  itemPoints: string | number | boolean | Record<string, string> | string[];
 }
 
 export const ItemStatusMap = new Map([

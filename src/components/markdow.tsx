@@ -5,7 +5,8 @@ import remarkGfm from 'remark-gfm';
 import { CodeBlock } from './code-block';
 
 const components: Partial<Components> = {
-  // @ts-expect-error
+  // @ts-expect-error - Link props may not match anchor props in react-markdown
+  // The above is a ts error
   code: CodeBlock,
   pre: ({ children }) => <>{children}</>,
   ol: ({ children, ...props }) => {
@@ -38,7 +39,8 @@ const components: Partial<Components> = {
   },
   a: ({ children, ...props }) => {
     return (
-      // @ts-expect-error
+      // @ts-expect-error - Link props may not match anchor props in react-markdown
+
       <Link
         className='text-blue-500 hover:underline'
         target='_blank'
