@@ -1,17 +1,39 @@
+import { formatItems } from '@/lib/helpers';
+import { listSprintTasks } from '@/lib/requests';
 import { openai } from '@ai-sdk/openai';
-import { streamText } from 'ai';
+import { streamText, tool } from 'ai';
+import { z } from 'zod';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
   try {
-    const { messages } = await req.json();
+    const { messages, sprintId, userId } = await req.json();
 
     const result = streamText({
       model: openai('gpt-4o-mini'),
-      system: `You are a zoho sprints ai assistant, if user asks anything else then the sprint related question, just tell - I am not trained to answer this question, also whenever user asks about his/her sprint related question, make sure to call the tool - function calling, the user will always ask questions about his/her tasks in the current sprint only, so the tool calling aka function calling is setup like that, it will list the user's current sprint tasks with information.`,
+      system: `
+      You are a helpful AI assistant integrated with Zoho Sprints. Your purpose is to assist users by answering questions specifically about their tasks in the current active sprint.
+
+      You must always use the available tool to fetch the user's sprint task details before responding. Do not answer from your own knowledge.
+
+      If the user's query is not related to their tasks in the current sprint, respond with:
+      "I am only trained to answer questions related to your current sprint tasks."
+      `,
       messages,
+      maxSteps: 3,
+      tools: {
+        getUserTasks: tool({
+          description: `Use this tool to fetch the current sprint tasks assigned to the logged-in user. This includes task titles, assigned users, statuses, start/end dates, and priorities.`,
+          parameters: z.object({ query: z.string() }),
+          execute: async () => {
+            const itemData = await listSprintTasks(sprintId, userId!);
+            const cleanItemData = formatItems(itemData);
+            return cleanItemData;
+          },
+        }),
+      },
     });
 
     return result.toDataStreamResponse();

@@ -11,15 +11,7 @@ import {
   UserMap,
 } from './types';
 
-let sprintUserId: string;
-
-export function storeUserId(userId: string) {
-  sprintUserId = userId;
-}
-
-export function retrieveUserId() {
-  return sprintUserId;
-}
+let tasksList: CleanedItems[];
 
 // some helper functions to cleanup zoho's response mess!
 
@@ -70,4 +62,12 @@ export function formatItems(itemData: ItemApiResponse) {
   });
 
   return items;
+}
+
+export function storeTasks(tasks: CleanedItems[]) {
+  tasksList = tasks;
+}
+
+export function retrieveTasks() {
+  return tasksList;
 }

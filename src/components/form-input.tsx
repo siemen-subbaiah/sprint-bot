@@ -1,8 +1,8 @@
-import React, { memo, useCallback, useEffect, useRef } from 'react';
-// import { AnimatePresence, motion } from 'framer-motion';
-// import { useScrollToBottom } from '@/hooks/use-scroll-to-bottom';
+import React, { memo, useEffect, useRef } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useScrollToBottom } from '@/hooks/use-scroll-to-bottom';
 import { Button } from './ui/button';
-import { ArrowUpIcon } from 'lucide-react';
+import { ArrowDown, ArrowUpIcon } from 'lucide-react';
 import { Textarea } from './ui/textarea';
 import cx from 'classnames';
 import { toast } from 'sonner';
@@ -35,7 +35,7 @@ const PureFormInput = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { width } = useWindowSize();
 
-  // const { isAtBottom, scrollToBottom } = useScrollToBottom();
+  const { isAtBottom, scrollToBottom } = useScrollToBottom();
 
   const adjustHeight = () => {
     if (textareaRef.current) {
@@ -58,16 +58,13 @@ const PureFormInput = ({
     adjustHeight();
   };
 
-  const submitForm = useCallback(() => {
-    console.log('helo');
+  const submitForm = () => {
     handleSubmit();
-
     resetHeight();
-
     if (width && width > 768) {
       textareaRef.current?.focus();
     }
-  }, [width]);
+  };
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -88,7 +85,7 @@ const PureFormInput = ({
   return (
     <form className='flex mx-auto px-4 bg-background pb-4 md:pb-6 gap-2 w-full md:max-w-3xl'>
       <div className='relative w-full flex flex-col gap-4'>
-        {/* <AnimatePresence>
+        <AnimatePresence>
           {!isAtBottom && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -111,7 +108,7 @@ const PureFormInput = ({
               </Button>
             </motion.div>
           )}
-        </AnimatePresence> */}
+        </AnimatePresence>
 
         {messages.length === 0 && <SuggestedActions append={append} />}
 

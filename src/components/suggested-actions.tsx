@@ -12,24 +12,24 @@ interface SuggestedActionsProps {
 function PureSuggestedActions({ append }: SuggestedActionsProps) {
   const suggestedActions = [
     {
-      title: 'What are the advantages',
-      label: 'of using Next.js?',
-      action: 'What are the advantages of using Next.js?',
+      title: 'What are the tasks',
+      label: 'assigned to me in this sprint?',
+      action: 'What are the tasks assigned to me in this sprint?',
     },
     {
-      title: 'Write code to',
-      label: `demonstrate djikstra's algorithm`,
-      action: `Write code to demonstrate djikstra's algorithm`,
+      title: 'Which tasks are',
+      label: 'currently in code review?',
+      action: 'Which tasks are currently in code review?',
     },
     {
-      title: 'Help me write an essay',
-      label: `about silicon valley`,
-      action: `Help me write an essay about silicon valley`,
+      title: 'List all',
+      label: 'high priority tasks I have',
+      action: 'List all high priority tasks I have',
     },
     {
-      title: 'What is the weather',
-      label: 'in San Francisco?',
-      action: 'What is the weather in San Francisco?',
+      title: 'What are my',
+      label: 'pending tasks for this sprint?',
+      action: 'What are my pending tasks for this sprint?',
     },
   ];
 
