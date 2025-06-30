@@ -39,6 +39,7 @@ export async function POST(req: Request) {
     return result.toDataStreamResponse();
   } catch (err) {
     console.error('Chat API error:', err);
+    console.log(err);
     return new Response('An error occurred.', { status: 500 });
   }
 }
