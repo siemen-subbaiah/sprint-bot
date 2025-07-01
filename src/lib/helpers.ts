@@ -5,13 +5,8 @@ import {
   ItemProp,
   ItemStatusMap,
   ItemTypeMap,
-  SprintAPIResponse,
-  sprintDetailsMap,
   UserApiResponse,
-  UserMap,
 } from './types';
-
-let tasksList: CleanedItems[];
 
 // some helper functions to cleanup zoho's response mess!
 
@@ -23,21 +18,14 @@ export function listCleanUsers(zohoBadUserObj: UserApiResponse) {
     userData.push({ userId, email: userArr[1], userName: userArr[0] });
   }
 
-  userData.forEach((user) => {
-    UserMap.set(user.userId, user.userName);
-  });
-
   return userData;
 }
 
-export function storeSprintDetails(currentSprint: SprintAPIResponse) {
-  sprintDetailsMap.set(
-    Object.keys(currentSprint.sprintJObj).toString(),
-    Object.values(currentSprint.sprintJObj)[0][0]
-  );
-}
-
-export function formatItems(itemData: ItemApiResponse) {
+export function formatItems(
+  itemData: ItemApiResponse,
+  userMap: Map<string, string>,
+  sprintName: string
+) {
   const items: CleanedItems[] = [];
   const keys: ItemProp = itemData.item_prop;
 
@@ -47,13 +35,13 @@ export function formatItems(itemData: ItemApiResponse) {
       itemName: value[keys.itemName],
       createdDate: value[keys.createdTime],
       completedDate: value[keys.completedDate],
-      createdBy: UserMap.get(String(value[keys.createdBy])),
+      createdBy: userMap.get(String(value[keys.createdBy])),
       itemType: ItemTypeMap.get(String(value[keys.projItemTypeId])),
       projectName: 'IQnext Cloud',
-      sprintName: sprintDetailsMap.get(String(value[keys.sprintId])),
+      sprintName,
       // relaseName:value[keys.rel]
       assignedTo: (value[keys.ownerId] as string[]).map((owner) =>
-        UserMap.get(owner)
+        userMap.get(owner)
       ),
       itemStatus: ItemStatusMap.get(String(value[keys.statusId])),
       itemPriority: ItemPriorityMap.get(String(value[keys.projPriorityId])),
@@ -62,12 +50,4 @@ export function formatItems(itemData: ItemApiResponse) {
   });
 
   return items;
-}
-
-export function storeTasks(tasks: CleanedItems[]) {
-  tasksList = tasks;
-}
-
-export function retrieveTasks() {
-  return tasksList;
 }

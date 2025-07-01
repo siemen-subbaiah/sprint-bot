@@ -319,7 +319,3 @@ export const ItemPriorityMap = new Map([
   ['13939000000022023', 'None'],
   ['13939000001109521', 'Un-Clear'],
 ]);
-
-export const UserMap = new Map<string, string>();
-
-export const sprintDetailsMap = new Map<string, string>();

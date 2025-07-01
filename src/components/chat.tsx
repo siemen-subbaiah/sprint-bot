@@ -9,15 +9,18 @@ import { ChatSDKError } from '@/lib/errors';
 import { FormInput } from './form-input';
 import { Messages } from './messages';
 import { useRouter } from 'next/navigation';
+import { SprintAPIResponse, UserApiResponse } from '@/lib/types';
 
 const Chat = ({
   userName,
   userId,
-  sprintId,
+  teams,
+  currentSprint,
 }: {
   userName: string | undefined;
   userId: string | undefined;
-  sprintId: string | undefined;
+  teams: UserApiResponse | undefined;
+  currentSprint: SprintAPIResponse | undefined;
 }) => {
   const router = useRouter();
 
@@ -40,8 +43,9 @@ const Chat = ({
   } = useChat({
     experimental_throttle: 100,
     body: {
-      sprintId,
       userId,
+      teams,
+      currentSprint,
     },
     sendExtraMessageFields: true,
     fetch: fetchWithErrorHandlers,
