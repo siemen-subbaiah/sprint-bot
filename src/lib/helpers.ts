@@ -21,6 +21,30 @@ export function listCleanUsers(zohoBadUserObj: UserApiResponse) {
   return userData;
 }
 
+export function findUserByNameMatch(
+  users: { userId: string; email: string; userName: string }[],
+  name: string
+) {
+  const normalizedSearch = name.toLowerCase().trim();
+
+  // Try exact match first
+  let match = users.find(
+    (user) =>
+      user.userName.toLowerCase() === normalizedSearch ||
+      user.email.toLowerCase() === normalizedSearch
+  );
+
+  if (match) return match;
+
+  match = users.find(
+    (user) =>
+      user.userName.toLowerCase().includes(normalizedSearch) ||
+      normalizedSearch.includes(user.userName.toLowerCase())
+  );
+
+  if (match) return match;
+}
+
 export function formatItems(
   itemData: ItemApiResponse,
   userMap: Map<string, string>,

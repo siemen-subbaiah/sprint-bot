@@ -1,5 +1,9 @@
-import { formatItems, listCleanUsers } from '@/lib/helpers';
-import { listSprintTasks } from '@/lib/requests';
+import {
+  findUserByNameMatch,
+  formatItems,
+  listCleanUsers,
+} from '@/lib/helpers';
+import { getTeamInfo, listSprintTasks } from '@/lib/requests';
 import { SprintAPIResponse, UserApiResponse } from '@/lib/types';
 import { openai } from '@ai-sdk/openai';
 import { CoreMessage, streamText, tool } from 'ai';
@@ -31,7 +35,9 @@ export async function POST(req: Request) {
       You are a helpful AI assistant integrated with Zoho Sprints. Your purpose is to assist users by answering questions specifically about their tasks in the current active sprint.
       
       IMPORTANT CONTEXT RULES:
+      - When users ask about someone else's tasks (e.g., "What is John working on?", "Show me nimai's tasks"), first use the findUserByName tool to get their user ID
       - Always use the getUserTasks tool when you need current sprint task information
+      - When user refers to "my tasks" or doesn't mention a specific person, use the logged-in user's ID directly
       - Remember and reference tasks discussed earlier in this conversation
       - When user refers to "this task", "that one", or "it", look for the most recently mentioned task in our conversation
       - Maintain context about previously discussed tasks, their statuses, priorities, and details
@@ -53,19 +59,61 @@ export async function POST(req: Request) {
       }
       `,
       messages,
-      maxSteps: 5, // Increased for better conversation flow
+      maxSteps: 7,
       tools: {
+        findUserByName: tool({
+          description: `Find a user's ID by their name. Use this when someone asks about another person's tasks.`,
+          parameters: z.object({
+            name: z
+              .string()
+              .describe(
+                "The name of the user to find (e.g., 'nimai', 'John', 'kirit')"
+              ),
+          }),
+          execute: async ({ name }) => {
+            const teams = await getTeamInfo();
+            const cleanUserData = listCleanUsers(teams);
+            const matchedUser = findUserByNameMatch(cleanUserData, name);
+
+            if (matchedUser) {
+              return {
+                success: true,
+                user: {
+                  userId: matchedUser.userId,
+                  userName: matchedUser.userName,
+                  email: matchedUser.email,
+                },
+                message: `Found user: ${matchedUser.userName}`,
+              };
+            } else {
+              return {
+                success: false,
+                message: `No user found with name "${name}". Available users: ${cleanUserData
+                  .map((u) => u.userName)
+                  .join(', ')}`,
+              };
+            }
+          },
+        }),
         getUserTasks: tool({
-          description: `Fetch current sprint tasks for the user. Use when you need fresh task data or when starting a new topic about tasks.`,
+          description: `Get sprint tasks for a specific user. Use the user ID from findUserByName when available or just use the logged-in user's ID.`,
           parameters: z.object({
             query: z
               .string()
               .describe(
                 'What specific information about tasks are you looking for?'
               ),
+            targetUserId: z
+              .string()
+              .optional()
+              .describe(
+                "The user ID to get tasks for. If not provided, uses the logged-in user's ID."
+              ),
           }),
-          execute: async ({ query }) => {
+          execute: async ({ query, targetUserId }) => {
             const userMap = new Map<string, string>();
+
+            const userIdToUse = targetUserId || userId;
 
             const userData = listCleanUsers(teams);
             userData.forEach((user) => {
@@ -77,7 +125,7 @@ export async function POST(req: Request) {
 
             const itemData = await listSprintTasks(
               currentSprint.sprintIds[0],
-              userId!
+              userIdToUse!
             );
             const cleanItemData = formatItems(itemData, userMap, sprintName);
 
@@ -89,6 +137,10 @@ export async function POST(req: Request) {
             };
           },
         }),
+      },
+      onStepFinish(res) {
+        console.log(res.toolCalls);
+        console.log(res.toolResults);
       },
     });
 

@@ -56,12 +56,49 @@ const PurePreviewMessage = ({
               message.role === 'user'
                 ? 'bg-primary text-primary-foreground px-3 py-2 rounded-xl max-w-2xl'
                 : 'w-full',
-              message.role === 'assistant' && requiresScrollPadding ? 'min-h-96' : ''
+              message.role === 'assistant' && requiresScrollPadding
+                ? 'min-h-96'
+                : ''
             )}
           >
             {message.parts?.map((part, index) => {
               const { type } = part;
+
               const key = `message-${message.id}-part-${index}`;
+
+              if (type === 'tool-invocation') {
+                const { toolInvocation } = part;
+                let loadingMessage: string;
+
+                if (toolInvocation.toolName === 'findUserByName') {
+                  if (toolInvocation.state === 'call') {
+                    loadingMessage = 'Processing...';
+
+                    if (toolInvocation.toolName === 'findUserByName') {
+                      loadingMessage = 'Finding user...';
+                    }
+                  } else if (toolInvocation.state === 'result') {
+                    loadingMessage = 'Found user';
+                  }
+
+                  return (
+                    <motion.div
+                      key={key}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{
+                        duration: 0.4,
+                        type: 'spring',
+                        stiffness: 120,
+                      }}
+                      className='flex gap-2 px-4 py-2 rounded-lg bg-muted text-muted-foreground w-fit my-2 shadow'
+                    >
+                      <span className='font-medium'>{loadingMessage!}</span>
+                    </motion.div>
+                  );
+                }
+              }
 
               if (type === 'text') {
                 return (

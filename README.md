@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Zoho Sprints AI Chatbot
 
-## Getting Started
+A conversational AI assistant for Zoho Sprints that helps you manage your sprints, tasks, and team with natural language.  
+Built with Next.js, Vercel AI SDK, and Zoho Sprints REST APIs.
 
-First, run the development server:
+---
+
+## ✨ Features
+
+- 🔐 **Zoho OAuth login**
+- 🚀 **Automatic detection of:**
+  - Current active sprint
+  - Logged-in sprint user ID
+  - Tasks assigned to the user
+- 💬 **Conversational chat** using OpenAI (gpt-4o-mini)
+- 🧠 **Tool-calling** for smart actions based on user queries
+- 👥 **Ask about other users** in your sprint
+- 🗂️ **Contextual memory** for chat continuity
+- ⚙️ **Powered by:**
+  - Vercel AI SDK (React + Node)
+  - Next.js App Router
+  - Zoho Sprints REST APIs
+
+---
+
+## 🚀 Getting Started
+
+### 1. **Clone the repository**
+
+```bash
+git clone https://github.com/yourusername/zoho-sprints-bot.git
+cd zoho-sprints-bot
+```
+
+### 2. **Install dependencies**
+
+```bash
+npm install
+```
+
+### 3. **Configure environment variables**
+
+Copy `.env.example` to `.env` and fill in your values:
+
+```bash
+cp .env.example .env
+```
+
+#### `.env` variables:
+
+| Variable                   | Description                   |
+| -------------------------- | ----------------------------- |
+| NEXT_PUBLIC_REDIRECT_URL   | Your app's OAuth redirect URL |
+| NEXT_PUBLIC_ZOHO_CLIENT_ID | Zoho OAuth client ID          |
+| ZOHO_CLIENT_SECRET         | Zoho OAuth client secret      |
+| ZOHO_SPRINT_TEAM_ID        | Your Zoho Sprints Team ID     |
+| ZOHO_SPRINT_PROJECT_ID     | Your Zoho Sprints Project ID  |
+| OPENAI_API_KEY             | OpenAI API key (for chat)     |
+
+---
+
+## 📝 How to get Zoho OAuth credentials
+
+1. **Register your app in the [Zoho API Console](https://api-console.zoho.com/):**
+
+   - Click **Add Client**.
+   - Choose **Server-based Applications**.
+   - Set the **Redirect URI** to match `NEXT_PUBLIC_REDIRECT_URL` in your `.env`.
+   - After creation, copy the **Client ID** and **Client Secret** into your `.env`.
+
+2. **Find your Team ID and Project ID:**
+   - Go to [Zoho Sprints](https://sprints.zoho.com/) and open your project.
+   - Click on your project, then go to **Settings**.
+   - You will find the **Team ID** and **Project ID** in the URL or under project/team settings.
+
+---
+
+## 🧑‍💻 Development
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
